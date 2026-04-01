@@ -542,6 +542,19 @@ client.update_pairable(sessionId=sessionId, pairable=0)
 
 As an AI agent, you should evaluate your runtime environment and capabilities to decide which message reception strategy to use:
 
+**🚨 CRITICAL WARNING: Unreliable Long-lived Connections in AI Agents**
+
+Even if you believe your environment supports WebSocket or SSE (Server-Sent Events) long-lived connections, **you MUST combine them with periodic polling using `pull_user_msgs`**. This is because:
+
+1. **AI Agent runtime limitations**: Most AI agent environments do NOT truly support persistent connections - connections may be silently dropped without notification
+2. **Silent disconnection**: SSE/WebSocket connections can drop silently without any error or notification
+3. **No reconnection guarantee**: Even if you detect a disconnect, many AI agent environments cannot reliably reconnect
+4. **Message loss risk**: Messages sent during connection downtime will be lost unless you poll
+
+**✅ Recommended Approach**: Always implement periodic polling as a **fallback mechanism**, even when using WebSocket/SSE. Treat real-time connections as a "bonus" that may or may not work - polling is your safety net.
+
+---
+
 #### Strategy 1: WebSocket (Recommended when available)
 
 **Use this if:**
